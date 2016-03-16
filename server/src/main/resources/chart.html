@@ -1,0 +1,110 @@
+<html>
+
+<head>
+</head>
+
+<body>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script type="text/javascript">
+        google.charts.load('current', {
+            'packages': ['line', 'corechart']
+        });
+        google.charts.setOnLoadCallback(chartToday);
+
+        function chartToday() {
+            var start = new Date();
+            start.setHours(0, 0, 0, 0);
+            drawChart(start, new Date())
+        }
+
+        function chartLastNDays(n) {
+            var end = new Date();
+            end.setHours(0, 0, 0, 0);
+            var start = new Date();
+            start.setDate(end.getDate() - n);
+            start.setHours(0, 0, 0, 0);
+            drawChart(start, end)
+        }
+
+        function drawChart(start, end) {
+            var jsonData = $.ajax({
+                url: "base/samples",
+                data: {
+                    "start": start.toISOString(),
+                    "end": end.toISOString()
+                },
+                dataType: "json",
+                async: false
+            }).responseText;
+            var data = JSON.parse(jsonData);
+
+            var chartDiv = document.getElementById('chart_div');
+
+            var dataTable = new google.visualization.DataTable();
+            dataTable.addColumn('date', 'Day');
+            dataTable.addColumn('number', "Gas");
+            dataTable.addColumn('number', "Electricity");
+
+            for (var i = 0; i < data.length; i++) {;
+                var time = Date.parse(data[i].dateTime);
+                var gas = data[i].gasReading;
+                var elec = data[i].electricityReading;
+                dataTable.addRow([new Date(time), gas, elec]);
+            }
+
+            var materialOptions = {
+                chart: {
+                    title: 'Gas and Electricity Consumption'
+                },
+                width: 900,
+                height: 500,
+                series: {
+                    // Gives each series an axis name that matches the Y-axis below.
+                    0: {
+                        axis: 'Electricity'
+                    },
+                    1: {
+                        axis: 'Gas'
+                    }
+                },
+                axes: {
+                    // Adds labels to each axis; they don't have to match the axis names.
+                    y: {
+                        Electricity: {
+                            label: 'Electricity (Kwh)',
+                            range: { min: 0 }
+                        },
+                        Gas: {
+                            label: 'Gas (M\u00B3)',
+                            range: { min: 0 }
+                        }
+                    }
+                }
+            };
+
+            var materialChart = new google.charts.Line(chartDiv);
+            materialChart.draw(dataTable, materialOptions);
+        }
+
+        function enteredDays() {
+            var nDays = document.getElementById("nDays").value;
+            if (isNaN(nDays)) {
+                alert("The N Days must be a number");
+            } else {
+                chartLastNDays(nDays)
+            }
+        }
+    </script>
+
+    <div id="chart_div" style="width: 900px; height: 500px"></div>
+    <button onclick="chartToday()">Today</button>
+    <button onclick="chartLastNDays(1)">Yesterday</button>
+    <button onclick="chartLastNDays(7)">Last 7d</button>
+    <button onclick="chartLastNDays(30)">Last 30d</button>
+    <br><br>
+    <input type="text" id="nDays" size="3">
+    <button onclick="enteredDays()">N Days</button>
+</body>
+
+</html>
