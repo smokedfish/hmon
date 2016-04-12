@@ -1,0 +1,51 @@
+<assembly>
+  <id>bin</id>
+
+  <formats>
+    <format>tar.gz</format>
+  </formats>
+
+  <fileSets>
+
+    <fileSet>
+      <directory>src/bin</directory>
+      <outputDirectory>bin</outputDirectory>
+      <includes>
+        <include>*.sh</include>
+      </includes>
+      <lineEnding>unix</lineEnding>
+      <fileMode>0755</fileMode>
+    </fileSet>
+
+    <fileSet>
+      <directory>src/etc</directory>
+      <outputDirectory>etc</outputDirectory>
+      <includes>
+        <include>*.properties</include>
+      </includes>
+      <lineEnding>unix</lineEnding>
+      <fileMode>0755</fileMode>
+    </fileSet>
+
+    <fileSet>
+      <directory>target</directory>
+      <outputDirectory>lib</outputDirectory>
+      <includes>
+        <include>*.jar</include>
+      </includes>
+    </fileSet>
+
+  </fileSets>
+
+  <dependencySets>
+
+    <dependencySet>
+      <outputDirectory>/lib</outputDirectory>
+      <unpack>false</unpack>
+      <scope>compile</scope>
+    </dependencySet>
+
+  </dependencySets>
+
+</assembly>
+
