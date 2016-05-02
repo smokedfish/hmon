@@ -6,7 +6,7 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 
 @Configuration
-@PropertySource("file:${hmon.home:.}/hmon.properties")
+@PropertySource("file:${hmon.home:.}/etc/hmon.properties")
 public class ServerConfiguration {
 
 	@Bean
